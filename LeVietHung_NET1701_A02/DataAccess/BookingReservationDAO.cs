@@ -85,5 +85,43 @@ namespace DataAccess
             }
             return listBookingReservation;
         }
+        public BookingReservation CreateBookingReservation(BookingReservation bookingReservation)
+        {
+            try
+            {
+                using var db = new FuminiHotelManagementContext();
+                var item = db.BookingReservations.Add(bookingReservation).Entity;
+                var result = db.SaveChanges();
+                return item;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public bool ReservationRoom(int reservationId)
+        {
+            using var db = new FuminiHotelManagementContext();
+            var reservation = db.BookingReservations.Where(a => a.BookingReservationId == reservationId).FirstOrDefault();
+            reservation.BookingStatus = 1;
+            db.BookingReservations.Update(reservation);
+            db.SaveChanges();
+            var listRoomId = db.BookingDetails.Where(a => a.BookingReservationId == reservationId).ToList();
+            var existedRoomId = db.RoomInformations.ToList();
+            if (listRoomId.Count > 0)
+            {
+                var commonRoomIds = listRoomId.Select(r => r.RoomId).Intersect(existedRoomId.Select(r => r.RoomId)).ToList();
+                foreach (var room in commonRoomIds)
+                {
+                    var item = db.RoomInformations.Where(a => a.RoomId == room).FirstOrDefault();
+                    item.RoomStatus = 1;
+                    db.RoomInformations.Update(item);
+                    db.SaveChanges();
+                }
+                return true;
+            }
+            return false;
+        }
     }
 }

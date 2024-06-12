@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Repository
+namespace Repository
 {
     public interface IBookingDetailRepository
     {
         List<BookingDetail>? GetBookDetailByBookingReservationID(string id);
         List<BookingDetail> SearchBookingDetail(string searchValue);
+        BookingDetail CreateBookingDetail(BookingDetail bookingReservation);
     }
 }

@@ -1,0 +1,65 @@
+﻿@page
+@model LeVietHungRazorPages.Pages.ReservationManagement.DetailModel
+@{
+}
+
+<h1 class="mt-4">Booking Detail</h1>
+<table class="table table-hover mt-5">
+    <thead style="background-color: #2d3748; color: white">
+        <tr>
+            <th style="width: 320px">
+                Booking Reservation ID
+            </th>
+            <th style="width: 180px">
+                Room Number
+            </th>
+            <th style="width: 180px">
+                Room Status
+            </th>
+            <th style="width: 250px">
+                Start Date
+            </th>
+            <th style="width: 250px">
+                End Date
+            </th>
+            <th style="width: 150px">
+                Actual Price
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.BookingReservations)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingReservationId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Room.RoomNumber)
+                </td>
+                <td>
+                    @if(item.Room.RoomStatus == 1)
+                    {
+                        <span>Active</span>
+                    }
+                    else
+                    {
+                        <span>InActive</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActualPrice)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button class="btn btn-primary">
+<a style="color: black; font-weight: bold; text-decoration: none" asp-page="/ReservationManagement/Index">Back to List</a>
+</button>

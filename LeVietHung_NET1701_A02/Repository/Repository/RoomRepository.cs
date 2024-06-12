@@ -1,11 +1,12 @@
 ﻿using BusinessObject.Models;
+using DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Repository
+namespace Repository
 {
     public class RoomRepository : IRoomRepository
     {
@@ -29,6 +30,11 @@ namespace DataAccess.Repository
             return RoomDAO.Instance.GetRoomInfoByID(id);
         }
 
+        public decimal? GetTotalPriceByListRoomId(List<int> RoomId)
+        {
+            return RoomDAO.Instance.GetTotalPriceByListRoomId(RoomId);
+        }
+
         public List<RoomInformation> SearchRoom(string searchValue)
         {
             return RoomDAO.Instance.SearchRoom(searchValue);
@@ -37,6 +43,11 @@ namespace DataAccess.Repository
         public bool UpdateRoom(RoomInformation room)
         {
             return RoomDAO.Instance.UpdateRoom(room);
+        }
+
+        public bool UpdateStatusRoom(List<int> RoomId)
+        {
+            return RoomDAO.Instance.UpdateStatusRoom(RoomId);
         }
     }
 }

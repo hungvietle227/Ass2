@@ -1,0 +1,18 @@
+﻿@page
+@model LeVietHungRazorPages.Pages.BookingDetailModel
+@{
+}
+
+<form asp-page="BookingDetail" method="post">
+    <label>Start Date:</label>
+    <input asp-for="StartDate" type="date" id="startDate" name="startDate" required>
+
+    <label>End Date:</label>
+    <input asp-for="EndDate" type="date" id="endDate" name="endDate" required>
+
+    <!-- Thêm các trường dữ liệu khác cần thiết cho việc đặt phòng -->
+
+    <!-- Thêm trường ẩn để lưu giữ SelectedRoomIds -->
+    <input type="hidden" id="selectedRoomIds" name="selectedRoomIds" value="@Model.SelectedRoomIds">
+    <button type="submit">Save Booking Details</button>
+</form>

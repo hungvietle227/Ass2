@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace DataAccess
         {
             int.TryParse(id, out var ID);
             using var db = new FuminiHotelManagementContext();
-            List<BookingDetail>? bookingDetail = db.BookingDetails.Where(c => c.BookingReservationId == ID).ToList();
+            List<BookingDetail>? bookingDetail = db.BookingDetails.Include(a=>a.Room).Where(c => c.BookingReservationId == ID).ToList();
             return bookingDetail;
         }
 
@@ -47,6 +48,21 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
             return listBookingDetail;
+        }
+
+        public BookingDetail CreateBookingDetail(BookingDetail bookingReservation)
+        {
+            try
+            {
+                using var db = new FuminiHotelManagementContext();
+                var item = db.BookingDetails.Add(bookingReservation).Entity;
+                var result = db.SaveChanges();
+                return item;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

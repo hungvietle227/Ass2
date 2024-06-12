@@ -33,8 +33,9 @@ namespace DataAccess
             try
             {
                 using var db = new FuminiHotelManagementContext();
-                return db.RoomInformations.Include(r => r.RoomType).ToList();
-            }catch (Exception ex)
+                return db.RoomInformations.Include(r => r.RoomType).Where(a => a.RoomStatus == 1).ToList();
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -46,7 +47,7 @@ namespace DataAccess
             RoomInformation? roomInfo = db.RoomInformations.FirstOrDefault(c => c.RoomId == ID);
             return roomInfo;
         }
-        public bool UpdateRoom(RoomInformation room )
+        public bool UpdateRoom(RoomInformation room)
         {
             try
             {
@@ -101,6 +102,37 @@ namespace DataAccess
                 db.RoomInformations.Remove(room);
                 var result = db.SaveChanges();
                 return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public decimal? GetTotalPriceByListRoomId(List<int> RoomId)
+        {
+            decimal? totalPrice = 0;
+            using var db = new FuminiHotelManagementContext();
+            foreach (int roomId in RoomId)
+            {
+                totalPrice += db.RoomInformations.FirstOrDefault(r => r.RoomId == roomId).RoomPricePerDay;
+            };
+            return totalPrice;
+        }
+
+        public bool UpdateStatusRoom(List<int> RoomId)
+        {
+            try
+            {
+                using var db = new FuminiHotelManagementContext();
+                foreach (int roomId in RoomId)
+                {
+                    var room = db.RoomInformations.FirstOrDefault(r => r.RoomId == roomId);
+                    room.RoomStatus = 0;
+                    db.RoomInformations.Update(room);
+                    var result = db.SaveChanges();
+                }
+                return true;
             }
             catch (Exception ex)
             {

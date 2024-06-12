@@ -1,6 +1,8 @@
-using DataAccess.Repository;
+using LeVietHungRazorPages.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Repository;
+using System.Text.Json;
 
 namespace LeVietHungRazorPages.Pages
 {
@@ -27,8 +29,10 @@ namespace LeVietHungRazorPages.Pages
             var result = _customerRepository.CheckLogin(Email, Password);
             if (result == DataAccess.Enums.Role.Customer)
             {
-                //SessionHelper.SetObjectAsJson(HttpContext.Session, "Customer", result);
-                return RedirectToPage("Customer");
+                var customer = _customerRepository.GetCustomerByEmail(Email);
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "Customer", customer);
+                HttpContext.Response.Cookies.Append("Customer", JsonSerializer.Serialize(customer));
+                return RedirectToPage("/RoomManagement/Index");
             }
             return RedirectToPage("Error");
         }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Repository
+namespace Repository
 {
     public interface IRoomRepository
     {
@@ -15,5 +15,7 @@ namespace DataAccess.Repository
         bool CreateRoom(RoomInformation room);
         List<RoomInformation> SearchRoom(string searchValue);
         bool DeleteRoom(int id);
+        decimal? GetTotalPriceByListRoomId(List<int> RoomId);
+        bool UpdateStatusRoom(List<int> RoomId);
     }
 }

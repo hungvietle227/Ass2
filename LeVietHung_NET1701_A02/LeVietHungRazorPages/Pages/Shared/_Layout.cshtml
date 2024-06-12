@@ -26,9 +26,19 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
+                            <a id="roomButton" class="nav-link text-dark" asp-area="" asp-page="/RoomManagement/Index">Room</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="reservationButton" class="nav-link text-dark" asp-area="" asp-page="/ReservationManagement/Index">View Booking Reservation</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="loginButton" class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <button id="logoutButton" class="nav-link btn btn-link text-dark">Logout</button>
                         </li>
                     </ul>
+                    <span id="customerName" class="nav-link text-dark"></span>
                 </div>
             </div>
         </nav>
@@ -44,6 +54,47 @@
             &copy; 2024 - LeVietHungRazorPages - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy giá trị của cookie có tên "Customer"
+            var customerCookie = getCookie("Customer");
+
+            // Kiểm tra xem cookie có chứa thông tin Customer hay không
+            if (customerCookie) {
+                // Ẩn nút "Login"
+                document.getElementById("loginButton").style.display = "none";
+                var customer = JSON.parse(customerCookie);
+                var customerName = customer.CustomerFullName; // Giả sử tên khách hàng được lưu trong trường "name"
+                document.getElementById("customerName").innerText = customerName;
+            } else {
+                document.getElementById("logoutButton").style.display = "none";
+                document.getElementById("reservationButton").style.display = "none";
+                document.getElementById("roomButton").style.display = "none";
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            var logoutButton = document.getElementById("logoutButton");
+            if (logoutButton) {
+                logoutButton.addEventListener("click", function () {
+                    document.cookie = "Customer=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    window.location.reload();
+                    window.location.href = "/Login";
+                });
+            }
+        });
+        // Hàm lấy giá trị của cookie theo tên
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var cookies = decodeURIComponent(document.cookie).split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.indexOf(nameEQ) === 0) {
+                    return cookie.substring(nameEQ.length, cookie.length);
+                }
+            }
+            return null;
+        }
+    </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

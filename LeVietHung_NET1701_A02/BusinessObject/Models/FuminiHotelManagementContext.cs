@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -63,7 +64,7 @@ public partial class FuminiHotelManagementContext : DbContext
             entity.ToTable("BookingReservation");
 
             entity.Property(e => e.BookingReservationId)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("BookingReservationID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.TotalPrice).HasColumnType("money");

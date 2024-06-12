@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Repository
+namespace Repository
 {
     public interface IBookingReservationRepository
     {
@@ -13,5 +13,8 @@ namespace DataAccess.Repository
         IEnumerable<BookingReservation> GetAllBookingReservationByDate(DateTime startDate, DateTime endDate);
         List<BookingReservation>? GetBookingReservationByCustomerID(string id);
         List<BookingReservation> SearchBookingReservation(string searchValue);
+        BookingReservation CreateBookingReservation(BookingReservation bookingReservation);
+        bool ReservationRoom(int reservationId);
+
     }
 }

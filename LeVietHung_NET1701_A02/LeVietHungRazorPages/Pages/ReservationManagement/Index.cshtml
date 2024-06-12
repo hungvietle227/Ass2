@@ -1,0 +1,67 @@
+﻿@page
+@model LeVietHungRazorPages.Pages.ReservationManagement.IndexModel
+@{
+}
+
+<h1>Reservation History</h1>
+@if (Model.Customer != null)
+{
+    <h1>@Model.Customer.CustomerFullName</h1>
+}
+<table class="table table-hover mt-4">
+    <thead style="background-color: #2d3748; color: white">
+        <tr>
+            <th style="width: 320px">
+                Booking Reservation ID
+            </th>
+            <th style="width: 250px">
+                Booking Date
+            </th>
+            <th style="width: 250px">
+                Total Price (VND)
+            </th>
+            <th style="width: 250px">
+                Booking Status
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.BookingReservations)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingReservationId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingStatus)
+                </td>
+                <td>
+                    <a asp-page="/ReservationManagement/Detail" asp-route-id="@item.BookingReservationId">Details</a> |
+                    <a asp-page="/ReservationManagement/Index" asp-route-id="@item.BookingReservationId">Reservation</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+    function redirectToReservation() {
+        var selectedRooms = [];
+        var checkboxes = document.querySelectorAll('input[name="selectedRooms"]:checked');
+        checkboxes.forEach(function (checkbox) {
+            selectedRooms.push(parseInt(checkbox.value)); // Chuyển giá trị RoomId sang kiểu số nguyên
+        });
+        console.log(selectedRooms)
+        // Chuyển hướng sang trang Booking Detail và truyền các RoomId đã chọn
+        window.location.href = '/BookingDetail?SelectedRoomIds=' + selectedRooms.join(',');
+        console.log('/BookingDetail?SelectedRoomIds=' + selectedRooms.join(','))
+    }
+</script>

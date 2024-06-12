@@ -1,0 +1,89 @@
+﻿@page
+@model LeVietHungRazorPages.Pages.RoomManagement.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Room Information</h1>
+@if (Model.Customer != null)
+{
+    <h1>@Model.Customer.CustomerFullName</h1>
+}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="width: 140px">
+                Room Number
+            </th>
+            <th>
+                RoomDetail Description
+            </th>
+            <th style="width: 170px">
+                Room Max Capacity
+            </th>
+            <th style="width: 125px">
+                Room Status
+            </th>
+            <th style="width: 170px">
+                Room Price PerDay
+            </th>
+            <th style="width: 140px">
+                Room Type
+            </th>
+            <th>Booking</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.RoomInformation)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomDetailDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomMaxCapacity)
+                </td>
+                <td>
+                    @if(item.RoomStatus == 1)
+                    {
+                        <span>Available</span>
+                    }
+                    else
+                    {
+                        <span>Not Available</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomPricePerDay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomType.RoomTypeName)
+                </td>
+                <td>
+                    <input style="margin-left: 25px; margin-top: 14px" type="checkbox" name="selectedRooms" value="@item.RoomId" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <button type="button" onclick="redirectToBookingDetail()">Booking Detail</button>
+</div>
+
+<script>
+    function redirectToBookingDetail() {
+        var selectedRooms = [];
+        var checkboxes = document.querySelectorAll('input[name="selectedRooms"]:checked');
+        checkboxes.forEach(function (checkbox) {
+            selectedRooms.push(parseInt(checkbox.value)); // Chuyển giá trị RoomId sang kiểu số nguyên
+        });
+        console.log(selectedRooms)
+        // Chuyển hướng sang trang Booking Detail và truyền các RoomId đã chọn
+        window.location.href = '/BookingDetail?SelectedRoomIds=' + selectedRooms.join(',');
+        console.log('/BookingDetail?SelectedRoomIds=' + selectedRooms.join(','))
+    }
+</script>
