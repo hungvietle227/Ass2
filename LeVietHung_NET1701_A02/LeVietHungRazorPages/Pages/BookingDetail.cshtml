@@ -16,3 +16,8 @@
     <input type="hidden" id="selectedRoomIds" name="selectedRoomIds" value="@Model.SelectedRoomIds">
     <button type="submit">Save Booking Details</button>
 </form>
+<form method="post" asp-page-handler="BackToRoom">
+    <input type="hidden" id="selectedRoomIds" name="selectedRoomIds" value="@Model.SelectedRoomIds">
+    <button type="submit" class="btn btn-secondary">Back to Room</button>
+</form>
+

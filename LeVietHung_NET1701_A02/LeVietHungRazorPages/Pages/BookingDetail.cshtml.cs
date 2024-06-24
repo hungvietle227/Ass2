@@ -1,7 +1,9 @@
 ﻿using BusinessObject.Models;
+using DataAccess.SignalRHub;
 using LeVietHungRazorPages.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using Repository;
 using System.Text.Json;
 
@@ -12,6 +14,7 @@ namespace LeVietHungRazorPages.Pages
         private readonly IBookingReservationRepository _bookingReservationRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IBookingDetailRepository _bookingDetailRepository;
+        private readonly IHubContext<RoomHub> _hubContext;
 
         //[BindProperty(SupportsGet = true)]
         //public List<int> SelectedRoomIds { get; set; }
@@ -31,11 +34,12 @@ namespace LeVietHungRazorPages.Pages
 
 
         public BookingDetailModel(IBookingReservationRepository bookingReservationRepository, IRoomRepository roomRepository,
-            IBookingDetailRepository bookingDetailRepository)
+            IBookingDetailRepository bookingDetailRepository, IHubContext<RoomHub> hubContext)
         {
             _bookingReservationRepository = bookingReservationRepository;
             _roomRepository = roomRepository;
             _bookingDetailRepository = bookingDetailRepository;
+            _hubContext = hubContext;
         }
 
         public IActionResult OnGet()
@@ -59,6 +63,8 @@ namespace LeVietHungRazorPages.Pages
             foreach (var roomId in RoomIds)
             {
                 Console.WriteLine(roomId);
+                // Gửi thông báo cập nhật trạng thái phòng đồng bộ
+                SendRoomUpdate(roomId, 0);
                 // Xử lý RoomId
             }
             return Page();
@@ -77,7 +83,7 @@ namespace LeVietHungRazorPages.Pages
                 var listIdRoom = SelectedRoomIds.Split(',').Select(int.Parse).ToList();
             _roomRepository.UpdateStatusRoom(listIdRoom);
             Random random = new Random();
-            int randomId = random.Next(1, 999999);
+            int randomId = random.Next(1, 999999999);
             decimal totalPrice = (decimal)_roomRepository.GetTotalPriceByListRoomId(listIdRoom);
             BookingReservation bookingReservation = new BookingReservation();
             bookingReservation.BookingReservationId = randomId;
@@ -95,12 +101,36 @@ namespace LeVietHungRazorPages.Pages
                 bookingDetail.EndDate = DateOnly.FromDateTime(endDate);
                 var priceByRoom = _roomRepository.GetRoomInfoByID(roomId.ToString()).RoomPricePerDay;
                 bookingDetail.ActualPrice = priceByRoom;
-                _bookingDetailRepository.CreateBookingDetail(bookingDetail);
+                var result2 = _bookingDetailRepository.CreateBookingDetail(bookingDetail);
             }
 
             return RedirectToPage("/ReservationManagement/Index");
             // Xử lý lưu thông tin đặt phòng vào cơ sở dữ liệu ở đây
             // Sử dụng startDate, endDate và các trường dữ liệu khác được gửi từ form
+        }
+
+        public IActionResult OnPostBackToRoom()
+        {
+            // Lấy danh sách phòng đã chọn từ query string
+            var roomIds = SelectedRoomIds.Split(',').Select(int.Parse).ToList();
+
+            // Gửi thông báo cập nhật trạng thái phòng thông qua SignalR
+            foreach (var roomId in roomIds)
+            {
+                // Gửi thông báo cập nhật trạng thái phòng đồng bộ
+                SendRoomUpdate(roomId, 1);
+                // Xử lý RoomId
+            }
+
+            // Chuyển hướng về trang quản lý phòng
+            return RedirectToPage("/RoomManagement/Index");
+        }
+
+        private void SendRoomUpdate(int roomId, int status)
+        {
+            // Tạo một task chạy đồng bộ
+            var task = _hubContext.Clients.All.SendAsync("ReceiveRoomUpdate", roomId, status);
+            task.Wait();
         }
     }
 }

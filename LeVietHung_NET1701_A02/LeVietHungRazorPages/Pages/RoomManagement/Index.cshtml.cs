@@ -8,12 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObject.Models;
 using Repository;
 using LeVietHungRazorPages.Helper;
+using Microsoft.AspNetCore.SignalR;
+using DataAccess.SignalRHub;
 
 namespace LeVietHungRazorPages.Pages.RoomManagement
 {
     public class IndexModel : PageModel
     {
         private readonly IRoomRepository _roomRepository;
+
         public Customer Customer { get; set; }
 
         public IndexModel(IRoomRepository roomRepository)

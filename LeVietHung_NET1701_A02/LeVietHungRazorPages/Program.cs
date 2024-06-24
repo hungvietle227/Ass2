@@ -1,16 +1,23 @@
+using BusinessObject.Models;
+using DataAccess.SignalRHub;
+using Microsoft.EntityFrameworkCore;
 using Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSignalR();
 builder.Services.AddRazorPages();
-
+builder.Services.AddHostedService<WorkerService>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
 builder.Services.AddScoped<IBookingReservationRepository, BookingReservationRepository>();
 
-
+builder.Services.AddDbContext<FuminiHotelManagementContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionStringDB"));
+});
 //builder.Services.AddMvc().AddRazorPagesOptions(options => options.Conventions.AddPageRoute("/Login", ""));
 
 builder.Services.AddSession(options => {
@@ -35,5 +42,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapHub<RoomHub>("/roomHub");
 
 app.Run();

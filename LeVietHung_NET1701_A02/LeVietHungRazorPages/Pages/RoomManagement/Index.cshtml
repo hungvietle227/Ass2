@@ -34,10 +34,10 @@
             <th>Booking</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="roomStatusTable">
         @foreach (var item in Model.RoomInformation)
         {
-            <tr>
+            <tr id="room-@item.RoomId" class="room-row @(item.RoomStatus == 1 ? "" : "d-none")">
                 <td>
                     @Html.DisplayFor(modelItem => item.RoomNumber)
                 </td>
@@ -74,16 +74,38 @@
     <button type="button" onclick="redirectToBookingDetail()">Booking Detail</button>
 </div>
 
-<script>
-    function redirectToBookingDetail() {
-        var selectedRooms = [];
-        var checkboxes = document.querySelectorAll('input[name="selectedRooms"]:checked');
-        checkboxes.forEach(function (checkbox) {
-            selectedRooms.push(parseInt(checkbox.value)); // Chuyển giá trị RoomId sang kiểu số nguyên
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.9/signalr.min.js"></script>
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder().withUrl("/roomHub").build();
+
+        connection.on("ReceiveRoomUpdate", function (roomId, status) {
+            const row = document.getElementById(`room-${roomId}`);
+            if (row) {
+                const statusCell = row.querySelector('td:nth-child(4) span');
+                statusCell.innerText = status === 1 ? 'Available' : 'Not Available';
+                if (status === 1) {
+                    row.classList.remove("d-none");
+                } else {
+                    row.classList.add("d-none");
+                }
+            }
         });
-        console.log(selectedRooms)
-        // Chuyển hướng sang trang Booking Detail và truyền các RoomId đã chọn
-        window.location.href = '/BookingDetail?SelectedRoomIds=' + selectedRooms.join(',');
-        console.log('/BookingDetail?SelectedRoomIds=' + selectedRooms.join(','))
-    }
-</script>
+
+        connection.start().catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        function redirectToBookingDetail() {
+            var selectedRooms = [];
+            var checkboxes = document.querySelectorAll('input[name="selectedRooms"]:checked');
+            checkboxes.forEach(function (checkbox) {
+                selectedRooms.push(parseInt(checkbox.value)); // Chuyển giá trị RoomId sang kiểu số nguyên
+            });
+            console.log(selectedRooms)
+            // Chuyển hướng sang trang Booking Detail và truyền các RoomId đã chọn
+            window.location.href = '/BookingDetail?SelectedRoomIds=' + selectedRooms.join(',');
+            console.log('/BookingDetail?SelectedRoomIds=' + selectedRooms.join(','))
+        }
+    </script>
+}

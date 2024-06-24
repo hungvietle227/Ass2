@@ -123,5 +123,11 @@ namespace DataAccess
             }
             return false;
         }
+        public List<int> GetRoomIdByReservationId(int reservationId)
+        {
+            using var db = new FuminiHotelManagementContext();
+            var result = db.BookingDetails.Where(a => a.BookingReservationId == reservationId).Select(b => b.RoomId).ToList();
+            return result;
+        }
     }
 }

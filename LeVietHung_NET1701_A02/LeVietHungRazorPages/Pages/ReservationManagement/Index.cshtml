@@ -43,25 +43,32 @@
                     @Html.DisplayFor(modelItem => item.BookingStatus)
                 </td>
                 <td>
-                    <a asp-page="/ReservationManagement/Detail" asp-route-id="@item.BookingReservationId">Details</a> |
-                    <a asp-page="/ReservationManagement/Index" asp-route-id="@item.BookingReservationId">Reservation</a>
+                    <a asp-page="/ReservationManagement/Detail" asp-route-id="@item.BookingReservationId">Details</a>
+                    @if (item.BookingStatus == 0)
+                    {
+                        <a asp-page="/ReservationManagement/Index" asp-route-id="@item.BookingReservationId"> <span class="text-black">|</span> Reservation</a>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+@section Scripts {
 
-<script>
-    function redirectToReservation() {
-        var selectedRooms = [];
-        var checkboxes = document.querySelectorAll('input[name="selectedRooms"]:checked');
-        checkboxes.forEach(function (checkbox) {
-            selectedRooms.push(parseInt(checkbox.value)); // Chuyển giá trị RoomId sang kiểu số nguyên
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.9/signalr.min.js"></script>
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder().withUrl("/roomHub").build();
+
+        connection.on("ReceiveRoomUpdate", function (roomId, status) {
+            window.location.reload();
         });
-        console.log(selectedRooms)
-        // Chuyển hướng sang trang Booking Detail và truyền các RoomId đã chọn
-        window.location.href = '/BookingDetail?SelectedRoomIds=' + selectedRooms.join(',');
-        console.log('/BookingDetail?SelectedRoomIds=' + selectedRooms.join(','))
-    }
-</script>
+
+        connection.start().catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    </script>
+}
+
+
