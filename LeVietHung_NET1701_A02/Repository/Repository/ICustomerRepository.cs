@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using DataAccess.DTO;
 using DataAccess.Enums;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Repository
         Role CheckLogin(string email, string password);
         Customer? GetCustomerByID(string id);
         bool UpdateCustomer(Customer customerUpdate);
-        bool CreateCustomer(Customer customerCreate);
+        Customer CreateCustomer(RegisterRequestDTO request);
         Customer? GetCustomerByEmail(string email);
         List<Customer> SearchCustomer(string searchValue);
         bool DeleteCustomer(int id);

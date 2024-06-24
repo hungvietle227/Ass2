@@ -4,20 +4,21 @@
 }
 
 <form asp-page="BookingDetail" method="post">
-    <label>Start Date:</label>
+    <label style="margin-right 10px">Start Date:</label>
     <input asp-for="StartDate" type="date" id="startDate" name="startDate" required>
-
-    <label>End Date:</label>
+    <br/>
+    <label style="margin-top: 20px; margin-right: 15px">End Date:</labe>
     <input asp-for="EndDate" type="date" id="endDate" name="endDate" required>
 
     <!-- Thêm các trường dữ liệu khác cần thiết cho việc đặt phòng -->
 
     <!-- Thêm trường ẩn để lưu giữ SelectedRoomIds -->
     <input type="hidden" id="selectedRoomIds" name="selectedRoomIds" value="@Model.SelectedRoomIds">
-    <button type="submit">Save Booking Details</button>
+    <br />
+    <button class="btn btn-primary" style="height: 38px; margin-top: 20px" type="submit">Save Booking Details</button>
 </form>
 <form method="post" asp-page-handler="BackToRoom">
     <input type="hidden" id="selectedRoomIds" name="selectedRoomIds" value="@Model.SelectedRoomIds">
-    <button type="submit" class="btn btn-secondary">Back to Room</button>
+    <button style="margin-top: 15px" type="submit" class="btn btn-secondary">Back to Room</button>
 </form>
 

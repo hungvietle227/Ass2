@@ -102,6 +102,7 @@ namespace LeVietHungRazorPages.Pages
                 var priceByRoom = _roomRepository.GetRoomInfoByID(roomId.ToString()).RoomPricePerDay;
                 bookingDetail.ActualPrice = priceByRoom;
                 var result2 = _bookingDetailRepository.CreateBookingDetail(bookingDetail);
+                SendRoomUpdate(roomId, 0);
             }
 
             return RedirectToPage("/ReservationManagement/Index");

@@ -1,6 +1,9 @@
+using BusinessObject.Models;
+using DataAccess.Enums;
 using LeVietHungRazorPages.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Repository;
 using System.Text.Json;
 
@@ -33,6 +36,12 @@ namespace LeVietHungRazorPages.Pages
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "Customer", customer);
                 HttpContext.Response.Cookies.Append("Customer", JsonSerializer.Serialize(customer));
                 return RedirectToPage("/RoomManagement/Index");
+            }
+            if (result == DataAccess.Enums.Role.Admin)
+            {
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "Customer", "Admin");
+                HttpContext.Response.Cookies.Append("Customer", "Admin");
+                return RedirectToPage("/Admin/Index");
             }
             return RedirectToPage("Error");
         }

@@ -13,7 +13,7 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IBookingDetailRepository, BookingDetailRepository>();
 builder.Services.AddScoped<IBookingReservationRepository, BookingReservationRepository>();
-
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddDbContext<FuminiHotelManagementContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionStringDB"));

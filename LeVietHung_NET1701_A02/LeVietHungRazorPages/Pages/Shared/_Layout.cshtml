@@ -32,7 +32,16 @@
                             <a id="reservationButton" class="nav-link text-dark" asp-area="" asp-page="/ReservationManagement/Index">View Booking Reservation</a>
                         </li>
                         <li class="nav-item">
+                            <a id="viewRoomAdmin" class="nav-link text-dark" asp-area="" asp-page="/Admin/Index">View Room</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="viewBookingAdmin" class="nav-link text-dark" asp-area="" asp-page="/Admin/ViewBooking">View Booking Reservation</a>
+                        </li>
+                        <li class="nav-item">
                             <a id="loginButton" class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="registerButton" class="nav-link text-dark" asp-area="" asp-page="/Register/Register">Register</a>
                         </li>
                         <li class="nav-item">
                             <button id="logoutButton" class="nav-link btn btn-link text-dark">Logout</button>
@@ -60,14 +69,26 @@
             var customerCookie = getCookie("Customer");
 
             // Kiểm tra xem cookie có chứa thông tin Customer hay không
-            if (customerCookie) {
+            if (customerCookie && customerCookie != "Admin") {
                 // Ẩn nút "Login"
                 document.getElementById("loginButton").style.display = "none";
+                document.getElementById("registerButton").style.display = "none";
+                document.getElementById("viewRoomAdmin").style.display = "none";
+                document.getElementById("viewBookingAdmin").style.display = "none";
                 var customer = JSON.parse(customerCookie);
                 var customerName = customer.CustomerFullName; // Giả sử tên khách hàng được lưu trong trường "name"
                 document.getElementById("customerName").innerText = customerName;
+            } else if (customerCookie && customerCookie == "Admin") {
+                document.getElementById("loginButton").style.display = "none";
+                document.getElementById("registerButton").style.display = "none";
+                document.getElementById("reservationButton").style.display = "none";
+                document.getElementById("roomButton").style.display = "none";
+                var customerName = "Admin"; // Giả sử tên khách hàng được lưu trong trường "name"
+                document.getElementById("customerName").innerText = customerName;
             } else {
                 document.getElementById("logoutButton").style.display = "none";
+                document.getElementById("viewRoomAdmin").style.display = "none";
+                document.getElementById("viewBookingAdmin").style.display = "none";
                 document.getElementById("reservationButton").style.display = "none";
                 document.getElementById("roomButton").style.display = "none";
             }

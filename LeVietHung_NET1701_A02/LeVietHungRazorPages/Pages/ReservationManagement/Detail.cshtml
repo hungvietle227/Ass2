@@ -13,9 +13,6 @@
             <th style="width: 180px">
                 Room Number
             </th>
-            <th style="width: 180px">
-                Room Status
-            </th>
             <th style="width: 250px">
                 Start Date
             </th>
@@ -38,16 +35,6 @@
                     @Html.DisplayFor(modelItem => item.Room.RoomNumber)
                 </td>
                 <td>
-                    @if(item.Room.RoomStatus == 1)
-                    {
-                        <span>Active</span>
-                    }
-                    else
-                    {
-                        <span>InActive</span>
-                    }
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.StartDate)
                 </td>
                 <td>
@@ -61,5 +48,5 @@
     </tbody>
 </table>
 <button class="btn btn-primary">
-<a style="color: black; font-weight: bold; text-decoration: none" asp-page="/ReservationManagement/Index">Back to List</a>
+<a style="color: white; font-weight: bold; text-decoration: none" asp-page="/ReservationManagement/Index">Back to List</a>
 </button>

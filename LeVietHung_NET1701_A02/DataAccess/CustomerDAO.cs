@@ -85,14 +85,15 @@ namespace DataAccess
             }
         }
 
-        public bool CreateCustomer(Customer customerCreate)
+        public Customer CreateCustomer(Customer customerCreate)
         {
             try
             {
                 using var db = new FuminiHotelManagementContext();
-                db.Customers.Add(customerCreate);
-                var result = db.SaveChanges();
-                return result > 0;
+                var newCustomer = db.Customers.Add(customerCreate);
+                db.SaveChanges();
+                var result = newCustomer.Entity;
+                return result;
             }
             catch (Exception ex)
             {

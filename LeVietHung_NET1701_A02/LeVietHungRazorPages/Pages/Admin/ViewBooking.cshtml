@@ -1,9 +1,8 @@
 ﻿@page
-@model LeVietHungRazorPages.Pages.ReservationManagement.IndexModel
+@model LeVietHungRazorPages.Pages.Admin.ViewBookingModel
 @{
 }
-
-<h1>Reservation History</h1>
+<h1>Reservation List</h1>
 
 <table class="table table-hover mt-4">
     <thead style="background-color: #2d3748; color: white">
@@ -24,7 +23,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.BookingReservations)
+        @foreach (var item in Model.BookingInformation)
         {
             <tr>
                 <td>
@@ -66,16 +65,14 @@
                 </td>
                 <td>
                     <a asp-page="/ReservationManagement/Detail" asp-route-id="@item.BookingReservationId">Details</a>
-                    @if (item.BookingStatus == 0)
-                    {
-                        <a asp-page="/ReservationManagement/Index" asp-route-id="@item.BookingReservationId"> <span class="text-black">|</span> Reservation</a>
-                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
+<div>
+    <a asp-page="/Admin/Index">View Room</a>
+</div>
 @section Scripts {
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.9/signalr.min.js"></script>

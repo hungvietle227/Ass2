@@ -1,6 +1,9 @@
-﻿using BusinessObject.Models;
+﻿using AutoMapper;
+using BusinessObject.Models;
 using DataAccess;
+using DataAccess.DTO;
 using DataAccess.Enums;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +14,12 @@ namespace Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
+        private readonly IMapper _mapper;
+        public CustomerRepository(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         public Role CheckLogin(string email, string password)
         {
             return CustomerDAO.Instance.CheckLogin(email, password);
@@ -30,9 +39,28 @@ namespace Repository
         {
             return CustomerDAO.Instance.UpdateCustomer(customerUpdate);
         }
-        public bool CreateCustomer(Customer customerCreate)
+        public Customer CreateCustomer(RegisterRequestDTO request)
         {
-            return CustomerDAO.Instance.CreateCustomer(customerCreate);
+            //Random random = new Random();
+            //int randomId = random.Next(1, 9999999);
+            var customer = new Customer()
+            {
+                CustomerFullName = request.CustomerFullName,
+                CustomerBirthday = request.CustomerBirthday,
+                CustomerStatus = 1,
+                EmailAddress = request.EmailAddress,
+                Password = request.Password,
+                Telephone = request.Telephone,
+            };
+
+            var registeredCustomer = CustomerDAO.Instance.CreateCustomer(customer);
+
+            if (registeredCustomer != null)
+            {
+                return registeredCustomer;
+            }
+
+            return null;
         }
 
         public Customer? GetCustomerByEmail(string email)

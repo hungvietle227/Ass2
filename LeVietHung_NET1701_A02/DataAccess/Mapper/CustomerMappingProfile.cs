@@ -9,6 +9,10 @@ namespace WPF.Utilities.Mappers
         public CustomerMappingProfile()
         {
             CreateMap<Customer, CustomCustomer>().ForMember(dest => dest.CustomerStatus, opt => opt.MapFrom(src => MapStatus(src.CustomerStatus))).ReverseMap();
+            CreateMap<RegisterRequestDTO, Customer>()
+            .ForMember(c => c.CustomerStatus, options => options.Ignore())
+            .ForMember(c => c.BookingReservations, options => options.Ignore());
+            CreateMap<Customer, RegisterRequestDTO>();
         }
         private string MapStatus(byte? CustomerStatus)
         {
