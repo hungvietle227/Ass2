@@ -77,5 +77,10 @@ namespace Repository
         {
             return CustomerDAO.Instance.DeleteCustomer(id);
         }
+
+        public Customer CreateCustomer1(Customer request)
+        {
+            return CustomerDAO.Instance.CreateCustomer(request);
+        }
     }
 }

@@ -17,5 +17,7 @@ namespace Repository
         bool DeleteRoom(int id);
         decimal? GetTotalPriceByListRoomId(List<int> RoomId);
         bool UpdateStatusRoom(List<int> RoomId);
+        IList<RoomInformation> Search(string text);
+        ICollection<RoomType> GetAllRommTypes();
     }
 }

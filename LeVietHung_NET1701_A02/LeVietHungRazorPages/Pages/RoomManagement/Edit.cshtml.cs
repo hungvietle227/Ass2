@@ -6,72 +6,47 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Repository;
 using BusinessObject.Models;
 
-namespace LeVietHungRazorPages.Pages.RoomManagement
+namespace NguyenDoCaoLinhRazorPages.Pages.Rooms
 {
     public class EditModel : PageModel
     {
-        private readonly BusinessObject.Models.FuminiHotelManagementContext _context;
+        private readonly IRoomRepository _roomInformationRepository;
 
-        public EditModel(BusinessObject.Models.FuminiHotelManagementContext context)
+        public EditModel(IRoomRepository roomInformationRepository)
         {
-            _context = context;
+            _roomInformationRepository = roomInformationRepository;
         }
-
+        public ICollection<RoomType> RoomTypes { get; set; }
         [BindProperty]
         public RoomInformation RoomInformation { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public IActionResult OnGetAsync(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var roominformation =  await _context.RoomInformations.FirstOrDefaultAsync(m => m.RoomId == id);
-            if (roominformation == null)
+            RoomTypes = _roomInformationRepository.GetAllRommTypes();
+            var roominformation = _roomInformationRepository.GetRoomInfoByID(id.ToString());
+            ; if (roominformation == null)
             {
                 return NotFound();
             }
             RoomInformation = roominformation;
-           ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "RoomTypeId", "RoomTypeName");
+            ViewData["RoomTypeId"] = new SelectList(RoomTypes, "RoomTypeId", "RoomTypeName");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            _context.Attach(RoomInformation).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RoomInformationExists(RoomInformation.RoomId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
+            var room = _roomInformationRepository.UpdateRoom(RoomInformation);
+            return RedirectToPage("/Admin/Index");
         }
 
-        private bool RoomInformationExists(int id)
-        {
-            return _context.RoomInformations.Any(e => e.RoomId == id);
-        }
+        /*        private bool RoomInformationExists(int id)
+                {
+                  return (_context.RoomInformations?.Any(e => e.RoomId == id)).GetValueOrDefault();
+                }*/
     }
 }

@@ -2,43 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessObject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObject.Models;
+using Repository;
 
-namespace LeVietHungRazorPages.Pages.RoomManagement
+namespace NguyenDoCaoLinhRazorPages.Pages.Rooms
 {
     public class CreateModel : PageModel
     {
-        private readonly BusinessObject.Models.FuminiHotelManagementContext _context;
-
-        public CreateModel(BusinessObject.Models.FuminiHotelManagementContext context)
+        private readonly IRoomRepository _roomInformationRepository;
+        public CreateModel(IRoomRepository roomInformationRepository)
         {
-            _context = context;
+            _roomInformationRepository = roomInformationRepository;
         }
-
-        public IActionResult OnGet()
+        public ICollection<RoomType> RoomTypes{ get; set; }
+        public async Task<IActionResult> OnGet()
         {
-        ViewData["RoomTypeId"] = new SelectList(_context.RoomTypes, "RoomTypeId", "RoomTypeName");
+            RoomTypes = _roomInformationRepository.GetAllRommTypes();
+            ViewData["RoomTypeId"] = new SelectList(RoomTypes, "RoomTypeId", "RoomTypeName");
             return Page();
         }
 
         [BindProperty]
         public RoomInformation RoomInformation { get; set; } = default!;
+        
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
+          if (RoomInformation == null)
+          {
                 return Page();
-            }
+          }
 
-            _context.RoomInformations.Add(RoomInformation);
-            await _context.SaveChangesAsync();
+            var room = _roomInformationRepository.CreateRoom(RoomInformation);
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/Admin/Index");
         }
     }
 }

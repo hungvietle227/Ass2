@@ -3,7 +3,9 @@
 @{
 }
 <h2>Room Information</h2>
-
+<p>
+    <a asp-page="/RoomManagement/Create">Create New</a>
+</p>
 <table class="table table-hover mt-4">
     <thead style="background-color: #2d3748; color: white">
         <tr>
@@ -24,6 +26,9 @@
             </th>
             <th style="width: 140px">
                 Room Type
+            </th>
+            <th style="width: 140px">
+                Action
             </th>
         </tr>
     </thead>
@@ -55,6 +60,10 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.RoomType.RoomTypeName)
+                </td>
+                <td>
+                    <a asp-page="/RoomManagement/Edit" asp-route-id="@item.RoomId">Edit</a> |
+                    <a asp-page="/RoomManagement/Delete" asp-route-id="@item.RoomId">Delete</a>
                 </td>
             </tr>
         }

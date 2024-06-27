@@ -20,6 +20,11 @@ namespace Repository
             return RoomDAO.Instance.DeleteRoom(id);
         }
 
+        public ICollection<RoomType> GetAllRommTypes()
+        {
+            return RoomDAO.Instance.GetAllRommTypes();
+        }
+
         public IEnumerable<RoomInformation> GetAllRoom()
         {
             return RoomDAO.Instance.GetAllRoom();
@@ -33,6 +38,26 @@ namespace Repository
         public decimal? GetTotalPriceByListRoomId(List<int> RoomId)
         {
             return RoomDAO.Instance.GetTotalPriceByListRoomId(RoomId);
+        }
+
+        public IList<RoomInformation> Search(string text)
+        {
+            IList<RoomInformation> rooms = RoomDAO.Instance.GetAllRoom().ToList();
+            var searchString = text.ToLowerInvariant();
+
+            var filteredRooms = rooms
+                .Where(room =>
+                    room.RoomId.ToString().Contains(searchString) ||
+                    room.RoomNumber?.ToLowerInvariant().Contains(searchString) == true ||
+                    room.RoomDetailDescription?.ToLowerInvariant().Contains(searchString) == true ||
+                    room.RoomMaxCapacity?.ToString().Contains(searchString) == true ||
+                    room.RoomTypeId.ToString().Contains(searchString) == true ||
+                    room.RoomStatus?.ToString().Contains(searchString) == true ||
+                    room.RoomPricePerDay?.ToString().Contains(searchString) == true
+                )
+                .ToList();
+
+            return filteredRooms;
         }
 
         public List<RoomInformation> SearchRoom(string searchValue)

@@ -139,5 +139,18 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
+        
+        public ICollection<RoomType> GetAllRommTypes()
+        {
+            try
+            {
+                using var db = new FuminiHotelManagementContext();
+                return db.RoomTypes.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

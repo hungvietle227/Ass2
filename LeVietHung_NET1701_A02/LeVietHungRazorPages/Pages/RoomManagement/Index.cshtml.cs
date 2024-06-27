@@ -16,6 +16,7 @@ namespace LeVietHungRazorPages.Pages.RoomManagement
     public class IndexModel : PageModel
     {
         private readonly IRoomRepository _roomRepository;
+        public string SearchString { get; set; }
 
         public Customer Customer { get; set; }
 
@@ -24,12 +25,20 @@ namespace LeVietHungRazorPages.Pages.RoomManagement
             _roomRepository = roomRepository;
         }
 
-        public IList<RoomInformation> RoomInformation { get;set; } = default!;
+        public IList<RoomInformation> RoomInformation { get; set; } = default!;
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            RoomInformation = _roomRepository.GetAllRoom().ToList();
-            Customer = SessionHelper.GetObjectFromJson<Customer>(HttpContext.Session, "Customer");
+            if (!string.IsNullOrEmpty(SearchString))
+            {
+                RoomInformation = _roomRepository.Search(SearchString);
+            }
+            else
+            {
+                RoomInformation = _roomRepository.GetAllRoom().ToList();
+                Customer = SessionHelper.GetObjectFromJson<Customer>(HttpContext.Session, "Customer");
+            }
+            return Page();
         }
     }
 }

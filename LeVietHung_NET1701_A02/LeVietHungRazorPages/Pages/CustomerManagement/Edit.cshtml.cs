@@ -6,30 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
+using Repository;
 using BusinessObject.Models;
 
-namespace LeVietHungRazorPages.Pages.CustomerManagement
+namespace NguyenDoCaoLinhRazorPages.Pages.Students
 {
     public class EditModel : PageModel
     {
-        private readonly BusinessObject.Models.FuminiHotelManagementContext _context;
+        private readonly ICustomerRepository _customerRepository;
 
-        public EditModel(BusinessObject.Models.FuminiHotelManagementContext context)
+        public EditModel(ICustomerRepository customerRepository)
         {
-            _context = context;
+            _customerRepository = customerRepository;
         }
-
+        [BindProperty(SupportsGet = true)]
+        public string ErrorMsg { get; set; }
         [BindProperty]
         public Customer Customer { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public IActionResult OnGetAsync(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer =  await _context.Customers.FirstOrDefaultAsync(m => m.CustomerId == id);
+            var customer =  _customerRepository.GetCustomerByID(id.ToString());
             if (customer == null)
             {
                 return NotFound();
@@ -40,37 +38,33 @@ namespace LeVietHungRazorPages.Pages.CustomerManagement
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            Customer customer = new Customer()
             {
+                CustomerId = Customer.CustomerId,
+                CustomerFullName = Customer.CustomerFullName,
+                CustomerBirthday = Customer.CustomerBirthday,
+                Telephone = Customer.Telephone,
+                EmailAddress = Customer.EmailAddress,
+                CustomerStatus = Customer.CustomerStatus,
+                Password = Customer.Password,
+            };
+            var result = _customerRepository.UpdateCustomer(customer);
+            if (!result)
+            {
+                ErrorMsg = "Fail";
                 return Page();
             }
-
-            _context.Attach(Customer).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(Customer.CustomerId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
+            return RedirectToPage("/CustomerManagement/Index");
         }
-
-        private bool CustomerExists(int id)
+        public static IEnumerable<SelectListItem> SelectStatus()
         {
-            return _context.Customers.Any(e => e.CustomerId == id);
+            return new[]
+            {
+                new SelectListItem {Text = "Active", Value = "1"},
+                new SelectListItem {Text = "Inactive", Value = "0"}
+            };
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿@page
-@model LeVietHungRazorPages.Pages.CustomerManagement.CreateModel
+@model NguyenDoCaoLinhRazorPages.Pages.Students.CreateModel
 
 @{
     ViewData["Title"] = "Create";
@@ -34,9 +34,11 @@
                 <span asp-validation-for="Customer.CustomerBirthday" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Customer.CustomerStatus" class="control-label"></label>
-                <input asp-for="Customer.CustomerStatus" class="form-control" />
-                <span asp-validation-for="Customer.CustomerStatus" class="text-danger"></span>
+                <label asp-for="Customer.CustomerStatus"></label>
+                <select asp-for="Customer.CustomerStatus" asp-items="@NguyenDoCaoLinhRazorPages.Pages.Students.CreateModel.SelectStatus()">
+                    <option>Please select</option>
+                </select>
+                <span asp-validation-for="Customer.CustomerStatus"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Customer.Password" class="control-label"></label>
@@ -56,4 +58,12 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+@if (!string.IsNullOrEmpty(Model.ErrorMsg))
+{
+    <div class="alert alert-danger">
+        @Model.ErrorMsg
+    </div>
 }

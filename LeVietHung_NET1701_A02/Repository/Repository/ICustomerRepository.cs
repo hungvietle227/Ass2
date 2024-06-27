@@ -19,5 +19,6 @@ namespace Repository
         Customer? GetCustomerByEmail(string email);
         List<Customer> SearchCustomer(string searchValue);
         bool DeleteCustomer(int id);
+        Customer CreateCustomer1(Customer request);
     }
 }

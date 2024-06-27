@@ -2,21 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessObject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObject.Models;
+using Repository;
 
-namespace LeVietHungRazorPages.Pages.CustomerManagement
+namespace NguyenDoCaoLinhRazorPages.Pages.Students
 {
     public class CreateModel : PageModel
     {
-        private readonly BusinessObject.Models.FuminiHotelManagementContext _context;
+        private readonly ICustomerRepository _customerRepository;
 
-        public CreateModel(BusinessObject.Models.FuminiHotelManagementContext context)
+        public CreateModel(ICustomerRepository customerRepository)
         {
-            _context = context;
+            _customerRepository = customerRepository;
         }
+
+        [BindProperty(SupportsGet = true)]
+        public string ErrorMsg { get; set; }
 
         public IActionResult OnGet()
         {
@@ -25,19 +29,36 @@ namespace LeVietHungRazorPages.Pages.CustomerManagement
 
         [BindProperty]
         public Customer Customer { get; set; } = default!;
+        
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            Customer value = new Customer()
             {
+                Password = Customer.Password,
+                CustomerStatus = Customer.CustomerStatus,
+                CustomerBirthday = Customer.CustomerBirthday,
+                CustomerFullName = Customer.CustomerFullName,
+                EmailAddress = Customer.EmailAddress,
+                Telephone = Customer.Telephone
+            };
+            var customer = _customerRepository.CreateCustomer1(value);
+            if (customer == null)
+            {
+                ErrorMsg = "Error";
                 return Page();
             }
+            return RedirectToPage("/CustomerManagement/Index");
+        }
 
-            _context.Customers.Add(Customer);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+        public static IEnumerable<SelectListItem> SelectStatus()
+        {
+            return new[]
+            {
+                new SelectListItem {Text = "Active", Value = "1"},
+                new SelectListItem {Text = "Inactive", Value = "0"}
+            };
         }
     }
 }

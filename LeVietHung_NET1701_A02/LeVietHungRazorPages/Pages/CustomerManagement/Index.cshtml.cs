@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BusinessObject.Models;
-using DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Repository;
+using BusinessObject.Models;
 
-namespace LeVietHungRazorPages.Pages.CustomerManagement
+namespace NguyenDoCaoLinhRazorPages.Pages.Students
 {
     public class IndexModel : PageModel
     {
@@ -19,12 +19,29 @@ namespace LeVietHungRazorPages.Pages.CustomerManagement
         {
             _customerRepository = customerRepository;
         }
-
         public IList<Customer> Customer { get;set; } = default!;
-
-        public void OnGet()
+        [BindProperty(SupportsGet = true)]
+        public string SearchString { get; set; }
+        public IActionResult OnGetAsync()
         {
-            Customer = _customerRepository.GetAllCustomer().ToList();
+            if (!string.IsNullOrEmpty(SearchString))
+            {
+                Customer = _customerRepository.SearchCustomer(SearchString);
+            }
+            else
+            {
+                Customer = _customerRepository.GetAllCustomer().ToList();
+            }
+            return Page();
+        }
+
+        public static IEnumerable<SelectListItem> SelectStatus()
+        {
+            return new[]
+            {
+                new SelectListItem {Text = "Active", Value = "1"},
+                new SelectListItem {Text = "Inactive", Value = "0"}
+            };
         }
     }
 }

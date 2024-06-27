@@ -2,61 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessObject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using BusinessObject.Models;
+using Repository;
 
-namespace LeVietHungRazorPages.Pages.CustomerManagement
+namespace NguyenDoCaoLinhRazorPages.Pages.Students
 {
     public class DeleteModel : PageModel
     {
-        private readonly BusinessObject.Models.FuminiHotelManagementContext _context;
+        private readonly ICustomerRepository _customerRepository;
 
-        public DeleteModel(BusinessObject.Models.FuminiHotelManagementContext context)
+        public DeleteModel(ICustomerRepository customerRepository)
         {
-            _context = context;
+            _customerRepository = customerRepository;
         }
 
         [BindProperty]
-        public Customer Customer { get; set; } = default!;
+      public Customer Customer { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public IActionResult OnGetAsync(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customers.FirstOrDefaultAsync(m => m.CustomerId == id);
+            var customer = _customerRepository.GetCustomerByID(id.ToString());
 
             if (customer == null)
             {
                 return NotFound();
             }
-            else
+            else 
             {
                 Customer = customer;
             }
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public IActionResult OnPostAsync(int id)
         {
-            if (id == null)
+            var customerCheck = _customerRepository.DeleteCustomer(id);
+            if (customerCheck)
             {
-                return NotFound();
+                return RedirectToPage("/CustomerManagement/Index");
             }
-
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer != null)
-            {
-                Customer = customer;
-                _context.Customers.Remove(Customer);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Index");
+            return NotFound();
         }
     }
 }
